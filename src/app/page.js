@@ -12,10 +12,10 @@ export default function WhyChooseUs() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "  https://abe1-49-47-130-108.ngrok-free.app/api/whychoose?populate=*"
+          "https://abe1-49-47-130-108.ngrok-free.app/api/whychoose?populate=*"
         );
         const responses = await fetch(
-          "  https://abe1-49-47-130-108.ngrok-free.app/api/features"
+          "https://abe1-49-47-130-108.ngrok-free.app/api/features"
         );
 
         if (!response.ok) throw new Error("Network response was not ok");
