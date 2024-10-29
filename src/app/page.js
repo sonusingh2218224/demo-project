@@ -1,101 +1,74 @@
+"use client";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function WhyChooseUs() {
+  const [data, setData] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(0);
+  const [features, setFeatures] = useState([]);
+  console.log(features);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:1337/api/whychoose?populate=*");
+        const responses = await fetch("http://localhost:1337/api/features");
+
+        if (!response.ok) throw new Error("Network response was not ok");
+        const result = await response.json();
+        setData(result.data);
+
+        if (!responses.ok) throw new Error("Network response was not ok");
+        const results = await responses.json();
+        setFeatures(results.data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (!data) return <p>Loading...</p>;
+
+  const handleOptionClick = (index) => {
+    setSelectedOption(index);
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <section className="container mx-auto p-6 text-center">
+      <h3 className="text-gray-500 text-sm uppercase">Why Choose Us</h3>
+      <h1 className="text-3xl font-bold my-4">{data.heading}</h1>
+      <p className="text-gray-700 max-w-2xl mx-auto">{data.description[0]?.children[0]?.text}</p>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <div className="flex flex-col md:flex-row mt-10 items-center justify-center">
+        {/* Left side with image and overlay */}
+        <div className="relative md:w-1/2 w-full flex items-center justify-center mb-8 md:mb-0">
+          <div className="rounded-full overflow-hidden h-64 w-64 relative">
+            {/* Add image here */}
+            <Image src="/1.jpeg" alt="Why Choose Us" layout="fill" objectFit="cover" />
+          </div>
+          <div className="absolute top-0 left-0 bg-red-600 opacity-80 rounded-full h-64 w-64 flex flex-col items-center justify-center p-6 text-white">
+            <h4 className="text-xl font-semibold">{data.secondheading}</h4>
+            <p className="text-sm">{data.seconddescription[0]?.children[0]?.text}</p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Right side with options list */}
+        <div className="md:w-1/2 w-full">
+          {features.map((feature, index) => (
+            <button
+              key={index}
+              onClick={() => handleOptionClick(index)}
+              className={`w-full text-left p-4 border rounded-lg my-2 
+                ${index === selectedOption ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700'}
+              `}
+            >
+              {feature.title}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
